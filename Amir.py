@@ -15,7 +15,7 @@ async def start(update: Update, context: CallbackContext):
 
 def main():
     # Retrieve the bot token from environment variable
-    token = '7946706520:AAHxnfqdrH6Km7QP-AnM3xYwEcZzvKaCJN8'
+    token =  '7946706520:AAHxnfqdrH6Km7QP-AnM3xYwEcZzvKaCJN8'
     if not token:
         raise ValueError("No TELEGRAM_TOKEN found in environment variables!")
 
@@ -25,11 +25,11 @@ def main():
     # Add command handler
     application.add_handler(CommandHandler("start", start))
 
-    # Start the bot
+    # Start the bot (this will continue running)
     application.run_polling()
 
-    # Start Flask to keep the app running
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+    # Start Flask to keep the app running on a fixed port
+    app.run(host="0.0.0.0", port=5000)  # Specify a random port like 5000
 
 if __name__ == '__main__':
     main()
