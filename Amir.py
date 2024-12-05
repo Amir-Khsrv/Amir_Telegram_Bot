@@ -1,44 +1,35 @@
-import logging
 from telegram import Update
-from telegram.ext import Application, CommandHandler, CallbackContext
-from flask import Flask, request
+from telegram.ext import Updater, CommandHandler, CallbackContext
+from flask import Flask
+import os
 
-# Setup logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Flask app for Render
 app = Flask(__name__)
 
-# Your bot's token here
-TELEGRAM_API_TOKEN = '7946706520:AAHxnfqdrH6Km7QP-AnM3xYwEcZzvKaCJN8'
+# Simple route to keep the app running
+@app.route('/')
+def home():
+    return "Bot is running"
 
-# Define the /start command
-async def start(update: Update, context: CallbackContext) -> None:
-    await update.message.reply_text('Hello! I am your simple bot.')
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text('Hello! I am your bot, deployed on Render.')
 
-# Setup the Application and add handlers
-async def setup_bot():
-    application = Application.builder().token(TELEGRAM_API_TOKEN).build()
-    application.add_handler(CommandHandler('start', start))
-    await application.initialize()
+def main():
+    # Retrieve the bot token from environment variable
+    token = '7946706520:AAHxnfqdrH6Km7QP-AnM3xYwEcZzvKaCJN8'
+    if not token:
+        raise ValueError("No TELEGRAM_TOKEN found in environment variables!")
 
-# Webhook route for Flask to handle requests from Telegram
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    update = Update.de_json(request.get_json(), None)
-    application.update_queue.put(update)  # Feed the update to the application queue
-    return 'OK'
+    updater = Updater(token, use_context=True)
+    dp = updater.dispatcher
 
-# Set the webhook when running the app
-async def set_webhook():
-    webhook_url = 'https://amir-telegram-bot.onrender.com/webhook'
-    application.bot.set_webhook(url=webhook_url)
+    # Add command handler
+    dp.add_handler(CommandHandler("start", start))
 
-# Start Flask app and set webhook
+    # Start the bot
+    updater.start_polling()
+
+    # Start Flask to keep the app running
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
+
 if __name__ == '__main__':
-    import asyncio
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(setup_bot())  # Initialize the bot
-    app.run(host='0.0.0.0', port=5000)
+    main()
