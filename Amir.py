@@ -15,7 +15,7 @@ async def start(update: Update, context: CallbackContext):
 
 def main():
     # Retrieve the bot token from environment variable
-    token =  '7946706520:AAHxnfqdrH6Km7QP-AnM3xYwEcZzvKaCJN8'
+    token =  '7248777740:AAFm2tNqMibOeXz48I4ICyE8OEJgWt5v_9s'
     if not token:
         raise ValueError("No TELEGRAM_TOKEN found in environment variables!")
 
