@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Your bot's token here
-TELEGRAM_API_TOKEN = 'YOUR_BOT_API_TOKEN'
+TELEGRAM_API_TOKEN = '7946706520:AAHxnfqdrH6Km7QP-AnM3xYwEcZzvKaCJN8'
 
 # Define the /start command
 def start(update: Update, context: CallbackContext) -> None:
