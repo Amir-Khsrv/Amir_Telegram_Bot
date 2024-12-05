@@ -1,5 +1,5 @@
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import Application, CommandHandler, CallbackContext
 from flask import Flask
 import os
 
@@ -10,8 +10,8 @@ app = Flask(__name__)
 def home():
     return "Bot is running"
 
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text('Hello! I am your bot, deployed on Render.')
+async def start(update: Update, context: CallbackContext):
+    await update.message.reply_text('Hello! I am your bot, deployed on Render.')
 
 def main():
     # Retrieve the bot token from environment variable
@@ -19,14 +19,14 @@ def main():
     if not token:
         raise ValueError("No TELEGRAM_TOKEN found in environment variables!")
 
-    updater = Updater(token, use_context=True)
-    dp = updater.dispatcher
+    # Create the Application instance
+    application = Application.builder().token(token).build()
 
     # Add command handler
-    dp.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("start", start))
 
     # Start the bot
-    updater.start_polling()
+    application.run_polling()
 
     # Start Flask to keep the app running
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
